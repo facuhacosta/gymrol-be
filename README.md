@@ -53,84 +53,76 @@ src/
 
     ```mermaid
     erDiagram
-    direction LR
-    USERS }|--o{ USER_ITEMS : has
-    USER_ITEMS }|--o{ ITEMS : has
-    USERS ||--|| WEIGHT_LOSS : traks
-    USERS ||--|{ USER_MISSIONS : completes
-    USER_MISSIONS }|--|{ MISSIONS : are
-    MISSIONS }|--|{ MISSION_EXERCISES : have
-    MISSION_EXERCISES }|--|{ EXERCISES : are
-    MISSIONS }o--o{ ITEMS : "can have"
+    direction TB
+    USERS ||--o{ USER_ITEMS : inventory
+    USERS ||--|{ USER_MISSIONS : participates
+    USERS ||--o{ WEIGHT_LOGS : tracks
+    USER_ITEMS }|--|| ITEMS : "instance of"
+    USER_MISSIONS }|--|| MISSIONS : "relates to"
+    MISSIONS }|--|{ MISSION_EXERCISES : contains
+    MISSION_EXERCISES }|--|| EXERCISES : "references"
+    MISSIONS }o--o{ ITEMS : "reward"
+
     USERS {
         string id PK
         string email
         string username
-        hash password
-        string google_id "Cuando inicia session con goolge"
         number level
         number xp
         number strength "STR"
         number dexterity "DEX"
         number vitality "VIT"
         number stamina "STA"
-        number intel "INT"
-        number height
-        number weight
+        number height "cm"
+        number weight "kg * 10"
         boolean is_premium
         string created_at
-        string updated_at
     }
-    WEIGHT_LOSS {
-        number id
+
+    WEIGHT_LOGS {
+        number id PK
         string user_id FK
         number weight
         date logged_at
     }
+
     ITEMS {
         string id PK
         string name
         string description
-        string category
-        string rarity
-        string scaling_stat
+        string category "weapon/armor/etc"
+        string rarity "common/legendary"
         number base_multiplier
-        number stat_weight
+        string scaling_stat "STR/DEX/etc"
+        number stat_weight "% scaling"
     }
+
     USER_ITEMS {
         string user_id PK, FK
         string item_id PK, FK
-        boolean equiped
+        boolean is_equipped
     }
-    USER_MISSIONS {
-        string mission_id PK, FK
-        string user_id PK, FK
-    }
+
     MISSIONS {
-        number id PK
+        string id PK
         string title
         string description
-        string type "short / daily / weekly / monthly"
-        string focus "strength, dexterity, vitality, stamina, balanced"
-        number progress "fraction of the total exercises compleated times 100"
-        string created_at "usualy when the user logs in for the first time in the day"
-        string expiration_date "used to calculate when the streak is lost"
-        number xp_reward "can be null"
-        string item_reward "from items table but not a foreign key, also can be null"
+        string type "daily/weekly/monthly"
+        string focus "strength/dexterity/etc"
+        string difficulty "beginner/intermediate/advanced"
+        string intensity "low/medium/high"
+        number xp_reward
+        string item_reward_id FK
+        boolean is_custom
+        string creator_id FK
     }
-    MISSION_EXERCISES {
-        string mission_id PK, FK
-        string exercise_id PK, FK
-        number repetitions
-        number series
-    }
+
     EXERCISES {
-        string id
-        string type "basic / voley / gym"
+        string id PK
+        string name
         string category
-        string description
-        string intensity
-        string example "Url to gif media"
+        string stat_weights "JSON {str, dex...}"
+        string example "Media URL"
     }
     ```
 
@@ -183,51 +175,31 @@ Endpoint unificado para Login y Registro. Si el email no existe, crea una cuenta
   }
   ```
 
-#### **POST `/auth/google-login`**
-Autenticación vía Google Play Games.
-- **Request Body**: `{ "idToken": "..." }`.
-- **Nota**: Crea un usuario automáticamente si no existe.
-
-#### **POST `/auth/recover-password`**
-Genera y envía un código de 6 dígitos.
-- **Request Body**: `{ "email": "user@example.com" }`.
-
-#### **PATCH `/auth/update-password`**
-Actualiza la contraseña después de validar el código.
-- **Request Body**:
-  ```json
-  {
-    "email": "user@example.com",
-    "code": "123456",
-    "newPassword": "newpassword123"
-  }
-  ```
-
 ---
 
 ### 2. Gestión de Usuarios (`/user`)
 *Requiere Auth Token*
 
 #### **GET `/user/me`**
-Obtiene el perfil completo.
+Obtiene el perfil completo, incluyendo bonos activos de equipamiento.
 - **Response**:
   ```json
   {
     "success": true,
     "data": {
       "id": "uuid",
-      "email": "...",
       "level": 5,
-      "xp": 4500,
-      "equipment": ["sword_v1", "shield_v1"],
-      "isPremium": false
+      "strength": 12,
+      "activeBonuses": [{ "name": "Espada", "bonus": 5, "stat": "strength" }]
     }
   }
   ```
 
-#### **PATCH `/user/me`**
-Actualiza estadísticas o equipamiento.
-- **Request Body**: `{ "equipment": ["item1"], "xp": 5000 }`.
+#### **GET `/user/weight-history`**
+Obtiene el historial de peso para gráficas.
+
+#### **POST `/user/weight-log`**
+Registra un nuevo peso manualmente.
 
 ---
 
@@ -235,74 +207,19 @@ Actualiza estadísticas o equipamiento.
 *Requiere Auth Token*
 
 #### **GET `/missions`**
-Lista misiones disponibles.
-- **Query Params**: `type` (opcional: `daily`, `weekly`, `monthly`).
-- **Lógica**: Filtra misiones `premium` si el usuario no tiene suscripción.
+Lista misiones disponibles. Las misiones que coincidan con la estadística más baja del usuario aparecen como **Recomendadas**.
 
 #### **PATCH `/missions/:id/complete`**
 Marca una misión como completada.
-- **Efectos**: Otorga la recompensa de XP y recalcula el nivel automáticamente.
+- **Efectos**: Otorga XP, incrementa atributos RPG (STR, DEX, etc.) y entrega ítems si aplica. Las misiones personalizadas se eliminan tras completarse.
 
 #### **POST `/missions/custom` (Premium Only)**
-Crea una misión personalizada.
-- **Request Body**:
-  ```json
-  {
-    "title": "Entrenamiento de Core",
-    "type": "daily",
-    "exercises": ["ex-1", "ex-4"],
-    "durationMinutes": 15,
-    "xpReward": 150
-  }
-  ```
-
----
-
-## 🛠 Ejemplos de Consumo
-
-### JavaScript (Fetch)
-```javascript
-const response = await fetch('https://gymrol-be.workers.dev/user/me', {
-  headers: {
-    'Authorization': `Bearer ${token}`
-  }
-});
-const result = await response.json();
-```
-
-### cURL
-```bash
-curl -X GET https://gymrol-be.workers.dev/missions?type=daily \
-  -H "Authorization: Bearer <TOKEN>"
-```
+Crea una misión personalizada. Solo se permite **una misión activa** a la vez.
 
 ---
 
 ## 🛡 Seguridad y Límites
 
-1.  **Rate Limiting**:
-    - Límite actual: **100 peticiones por minuto por IP**.
-    - Retorna `429 Too Many Requests` al excederlo.
-2.  **Hashing**: Contraseñas procesadas con `bcryptjs` (salt rounds: 10).
-3.  **CORS**: Configurado para permitir integración con aplicaciones móviles y web.
-4.  **Error Handling**:
-    - Todos los errores retornan un objeto estructurado: `{ "success": false, "message": "..." }`.
-    - Códigos HTTP: `400` (Validación), `401` (Unauthorized), `403` (Forbidden), `404` (Not Found), `500` (Server Error).
-
----
-
-## 🧪 Pruebas Unitarias
-
-Ejecuta el set de pruebas para validar la integridad de la autenticación:
-```bash
-npm test
-```
-
----
-
-## 📝 Buenas Prácticas para Integración
-
-- **Almacenamiento de Token**: En aplicaciones móviles, guarda el JWT de forma segura (EncryptedSharedPreferences en Android o Keychain en iOS).
-- **Manejo de Expiración**: Si el servidor responde con `401`, redirige al usuario al flujo de Login.
-- **Optimización de Carga**: Utiliza el endpoint `GET /user/me` al inicio de la app para hidratar el estado global del personaje.
-- **Sincronización de XP**: Al completar misiones, el backend recalcula el nivel. Se recomienda volver a consultar `/user/me` después de completar misiones críticas.
+1.  **Rate Limiting**: 100 peticiones por minuto por IP.
+2.  **RPG Balance**: Las misiones personalizadas otorgan un 50% menos de XP para mantener el balance del juego.
+3.  **Auto-limpieza**: Las misiones de usuario se borran automáticamente tras ser completadas para optimizar la base de datos.
