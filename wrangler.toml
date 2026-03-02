@@ -3,9 +3,9 @@ main = "src/index.ts"
 compatibility_date = "2024-02-27"
 
 [[d1_databases]]
-binding = "DB"
-database_name = "gymrol-db"
-database_id = "gymrol-db-id"
+binding = "GYMROL_DATABASE"
+database_name = "gymrol-database"
+database_id = "22a1442c-64be-466b-917c-02e3a19c5d9c"
 migrations_dir = "drizzle/migrations"
 
 [vars]
