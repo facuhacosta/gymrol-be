@@ -134,6 +134,7 @@ src/
     }
     ```
 
+
 3.  **Variables de Entorno**:
     Crea un archivo `.dev.vars` para desarrollo local:
     ```env
