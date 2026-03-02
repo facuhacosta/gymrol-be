@@ -1,0 +1,15 @@
+name = "gymrol-be"
+main = "src/index.ts"
+compatibility_date = "2024-02-27"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "gymrol-db"
+database_id = "gymrol-db-id"
+migrations_dir = "drizzle/migrations"
+
+[vars]
+JWT_SECRET = "supersecretjwtkey"
+GOOGLE_CLIENT_ID = "YOUR_GOOGLE_CLIENT_ID"
+RESEND_API_KEY = "YOUR_RESEND_API_KEY" # For sending emails
+RESEND_EMAIL_FROM = "no-reply@gymrol.com"
