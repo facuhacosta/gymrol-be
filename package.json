@@ -8,8 +8,8 @@
     "deploy": "wrangler deploy --minify",
     "test": "vitest",
     "db:generate": "drizzle-kit generate",
-    "db:migrate": "wrangler d1 migrations apply gymrol-db --local",
-    "db:migrate:prod": "wrangler d1 migrations apply gymrol-db --remote"
+    "db:migrate": "wrangler d1 migrations apply gymrol-database --local",
+    "db:migrate:prod": "wrangler d1 migrations apply gymrol-database --remote"
   },
   "keywords": [],
   "author": "",
