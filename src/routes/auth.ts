@@ -60,6 +60,7 @@ authRouter.post("/authenticate", zValidator("json", authenticateSchema), async (
       xp: 0,
       equipment: [],
       isPremium: false,
+      createdAt: new Date()
     });
 
     user = await db.query.users.findFirst({
@@ -106,6 +107,7 @@ authRouter.post("/google-login", zValidator("json", googleLoginSchema), async (c
       xp: 0,
       equipment: [],
       isPremium: false,
+      createdAt: new Date()
     });
     
     user = await db.query.users.findFirst({

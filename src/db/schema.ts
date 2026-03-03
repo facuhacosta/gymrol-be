@@ -1,5 +1,5 @@
 import { sqliteTable, text, integer, primaryKey } from "drizzle-orm/sqlite-core";
-import { sql } from "drizzle-orm";
+import { sql, relations } from "drizzle-orm";
 
 export const users = sqliteTable("users", {
   id: text("id").primaryKey(),
@@ -8,6 +8,8 @@ export const users = sqliteTable("users", {
   googleId: text("google_id").unique(),
   level: integer("level").default(1).notNull(),
   xp: integer("xp").default(0).notNull(),
+  difficulty: text("difficulty", { enum: ["beginner", "intermediate", "advanced"] }).default("beginner").notNull(),
+  fitnessExperience: text("fitness_experience").default("none").notNull(), // e.g., "None", "Some gym", "Athlete"
   // RPG Stats
   strength: integer("strength").default(10).notNull(),
   dexterity: integer("dexterity").default(10).notNull(),
@@ -23,6 +25,10 @@ export const users = sqliteTable("users", {
   updatedAt: integer("updated_at", { mode: "timestamp" }).default(sql`CURRENT_TIMESTAMP`),
 });
 
+export const usersRelations = relations(users, ({ many }) => ({
+  userItems: many(userItems),
+}));
+
 export const items = sqliteTable("items", {
   id: text("id").primaryKey(),
   name: text("name").notNull(),
@@ -35,6 +41,10 @@ export const items = sqliteTable("items", {
   statWeight: integer("stat_weight").default(1).notNull(), // % scaling per stat point
 });
 
+export const itemsRelations = relations(items, ({ many }) => ({
+  userItems: many(userItems),
+}));
+
 export const userItems = sqliteTable("user_items", {
   userId: text("user_id").notNull().references(() => users.id),
   itemId: text("item_id").notNull().references(() => items.id),
@@ -42,6 +52,17 @@ export const userItems = sqliteTable("user_items", {
   acquiredAt: integer("acquired_at", { mode: "timestamp" }).default(sql`CURRENT_TIMESTAMP`).notNull(),
 }, (table) => ({
   pk: primaryKey({ columns: [table.userId, table.itemId] }),
+}));
+
+export const userItemsRelations = relations(userItems, ({ one }) => ({
+  user: one(users, {
+    fields: [userItems.userId],
+    references: [users.id],
+  }),
+  item: one(items, {
+    fields: [userItems.itemId],
+    references: [items.id],
+  }),
 }));
 
 export const missions = sqliteTable("missions", {
@@ -66,6 +87,7 @@ export const userMissions = sqliteTable("user_missions", {
   userId: text("user_id").notNull().references(() => users.id),
   missionId: text("mission_id").notNull().references(() => missions.id),
   status: text("status", { enum: ["pending", "completed"] }).default("pending").notNull(),
+  assignedAt: integer("assigned_at", { mode: "timestamp" }).default(sql`CURRENT_TIMESTAMP`).notNull(),
   completedAt: integer("completed_at", { mode: "timestamp" }),
 }, (table) => ({
   pk: primaryKey({ columns: [table.userId, table.missionId] }),

@@ -8,6 +8,27 @@
       "when": 1772220633740,
       "tag": "0000_regular_zeigeist",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1772549472981,
+      "tag": "0001_youthful_scream",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1772549500000,
+      "tag": "0002_seed_data",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1772569163630,
+      "tag": "0003_youthful_gertrude_yorkes",
+      "breakpoints": true
     }
   ]
 }

@@ -69,6 +69,8 @@ src/
         string username
         number level
         number xp
+        string difficulty "beginner/intermediate/advanced"
+        string fitness_experience "None/Some gym/Athlete"
         number strength "STR"
         number dexterity "DEX"
         number vitality "VIT"

@@ -3,10 +3,10 @@ import { z } from "zod";
 import { zValidator } from "@hono/zod-validator";
 import { getDB } from "../db";
 import { users, weightLogs, userItems, items } from "../db/schema";
-import { eq, desc } from "drizzle-orm";
+import { eq, desc, and, sql } from "drizzle-orm";
 import { authMiddleware } from "../middleware/auth";
 import { Bindings, Variables } from "../types";
-import { calculateEffectiveBonus } from "../utils/rpg";
+import { calculateEffectiveBonus, getRequiredXP } from "../utils/rpg";
 
 export const userRouter = new Hono<{ Bindings: Bindings; Variables: Variables }>();
 
@@ -17,6 +17,8 @@ const updateUserSchema = z.object({
   isPremium: z.boolean().optional(),
   height: z.number().optional(),
   weight: z.number().optional(),
+  difficulty: z.enum(["beginner", "intermediate", "advanced"]).optional(),
+  fitnessExperience: z.string().optional(),
 });
 
 const logWeightSchema = z.object({
@@ -36,27 +38,42 @@ userRouter.get("/me", async (c) => {
     return c.json({ success: false, message: "User not found" }, 404);
   }
 
-  // Get equipped items to calculate bonuses
-  const equippedItems = await db.select({
-    item: items,
-  })
-  .from(userItems)
-  .innerJoin(items, eq(userItems.itemId, items.id))
-  .where(and(eq(userItems.userId, userId), eq(userItems.isEquipped, true)));
+  // Get equipped items to calculate bonuses using relational API
+  const equippedUserItems = await db.query.userItems.findMany({
+    where: and(eq(userItems.userId, userId), eq(userItems.isEquipped, true)),
+    with: {
+      item: true,
+    },
+  });
 
-  const bonuses = equippedItems.map(ei => ({
+  const bonuses = equippedUserItems.map(ei => ({
     name: ei.item.name,
-    bonus: calculateEffectiveBonus(user, ei.item),
+    bonus: calculateEffectiveBonus(user, {
+      baseMultiplier: ei.item.baseMultiplier,
+      scalingStat: ei.item.scalingStat as any,
+      statWeight: ei.item.statWeight,
+    }),
     stat: ei.item.scalingStat,
   }));
 
   // Don't return password hash
   const { passwordHash, ...userData } = user;
-
+  const { strength, dexterity, vitality, stamina, intelligence, ...rest } = userData;
+  
+  const xpNextLevel = getRequiredXP(user.level);
+  
   return c.json({
     success: true,
     data: {
-      ...userData,
+      ...rest,
+      attributes: {
+        strength,
+        dexterity,
+        vitality,
+        stamina,
+        intelligence,
+      },
+      xpNextLevel,
       activeBonuses: bonuses,
     },
   });
@@ -77,6 +94,7 @@ userRouter.patch("/me", zValidator("json", updateUserSchema), async (c) => {
     await db.insert(weightLogs).values({
       userId,
       weight: updateData.weight,
+      loggedAt: new Date(),
     });
   }
 
@@ -88,11 +106,43 @@ userRouter.patch("/me", zValidator("json", updateUserSchema), async (c) => {
     return c.json({ success: false, message: "User not found" }, 404);
   }
 
+  // Get equipped items to calculate bonuses using relational API
+  const equippedUserItems = await db.query.userItems.findMany({
+    where: and(eq(userItems.userId, userId), eq(userItems.isEquipped, true)),
+    with: {
+      item: true,
+    },
+  });
+
+  const bonuses = equippedUserItems.map(ei => ({
+    name: ei.item.name,
+    bonus: calculateEffectiveBonus(updatedUser, {
+      baseMultiplier: ei.item.baseMultiplier,
+      scalingStat: ei.item.scalingStat as any,
+      statWeight: ei.item.statWeight,
+    }),
+    stat: ei.item.scalingStat,
+  }));
+
   const { passwordHash, ...userData } = updatedUser;
+  const { strength, dexterity, vitality, stamina, intelligence, ...rest } = userData;
+  
+  const xpNextLevel = getRequiredXP(updatedUser.level);
 
   return c.json({
     success: true,
-    data: userData,
+    data: {
+      ...rest,
+      attributes: {
+        strength,
+        dexterity,
+        vitality,
+        stamina,
+        intelligence,
+      },
+      xpNextLevel,
+      activeBonuses: bonuses,
+    },
   });
 });
 
@@ -121,6 +171,7 @@ userRouter.post("/weight-log", zValidator("json", logWeightSchema), async (c) =>
   await db.insert(weightLogs).values({
     userId,
     weight,
+    loggedAt: new Date(),
   });
 
   // Update current weight in user table
@@ -131,6 +182,3 @@ userRouter.post("/weight-log", zValidator("json", logWeightSchema), async (c) =>
     message: "Weight logged successfully",
   });
 });
-
-// Helper for 'and' since it's used in 'where'
-import { and } from "drizzle-orm";

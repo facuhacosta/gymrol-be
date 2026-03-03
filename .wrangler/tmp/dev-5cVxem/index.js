@@ -23,11 +23,11 @@ var __export = (target, all) => {
   for (var name in all)
     __defProp(target, name, { get: all[name], enumerable: true });
 };
-var __copyProps = (to, from, except2, desc2) => {
+var __copyProps = (to, from, except2, desc3) => {
   if (from && typeof from === "object" || typeof from === "function") {
     for (let key of __getOwnPropNames(from))
       if (!__hasOwnProp.call(to, key) && key !== except2)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc2 = __getOwnPropDesc(from, key)) || desc2.enumerable });
+        __defProp(to, key, { get: () => from[key], enumerable: !(desc3 = __getOwnPropDesc(from, key)) || desc3.enumerable });
   }
   return to;
 };
@@ -44,7 +44,7 @@ var __publicField = (obj, key, value) => {
   return value;
 };
 
-// .wrangler/tmp/bundle-4GUNvJ/checked-fetch.js
+// .wrangler/tmp/bundle-K5oDVx/checked-fetch.js
 function checkURL(request, init) {
   const url = request instanceof URL ? request : new URL(
     (typeof request === "string" ? new Request(request, init) : request).url
@@ -62,7 +62,7 @@ function checkURL(request, init) {
 }
 var urls;
 var init_checked_fetch = __esm({
-  ".wrangler/tmp/bundle-4GUNvJ/checked-fetch.js"() {
+  ".wrangler/tmp/bundle-K5oDVx/checked-fetch.js"() {
     "use strict";
     urls = /* @__PURE__ */ new Set();
     __name(checkURL, "checkURL");
@@ -76,14 +76,14 @@ var init_checked_fetch = __esm({
   }
 });
 
-// .wrangler/tmp/bundle-4GUNvJ/strip-cf-connecting-ip-header.js
+// .wrangler/tmp/bundle-K5oDVx/strip-cf-connecting-ip-header.js
 function stripCfConnectingIPHeader(input, init) {
   const request = new Request(input, init);
   request.headers.delete("CF-Connecting-IP");
   return request;
 }
 var init_strip_cf_connecting_ip_header = __esm({
-  ".wrangler/tmp/bundle-4GUNvJ/strip-cf-connecting-ip-header.js"() {
+  ".wrangler/tmp/bundle-K5oDVx/strip-cf-connecting-ip-header.js"() {
     "use strict";
     __name(stripCfConnectingIPHeader, "stripCfConnectingIPHeader");
     globalThis.fetch = new Proxy(globalThis.fetch, {
@@ -1945,12 +1945,12 @@ var require_bcrypt = __commonJS({
   }
 });
 
-// .wrangler/tmp/bundle-4GUNvJ/middleware-loader.entry.ts
+// .wrangler/tmp/bundle-K5oDVx/middleware-loader.entry.ts
 init_checked_fetch();
 init_strip_cf_connecting_ip_header();
 init_modules_watch_stub();
 
-// .wrangler/tmp/bundle-4GUNvJ/middleware-insertion-facade.js
+// .wrangler/tmp/bundle-K5oDVx/middleware-insertion-facade.js
 init_checked_fetch();
 init_strip_cf_connecting_ip_header();
 init_modules_watch_stub();
@@ -4489,9 +4489,9 @@ var util;
   }
   __name(assertNever, "assertNever");
   util2.assertNever = assertNever;
-  util2.arrayToEnum = (items) => {
+  util2.arrayToEnum = (items3) => {
     const obj = {};
-    for (const item of items) {
+    for (const item of items3) {
       obj[item] = item;
     }
     return obj;
@@ -7439,18 +7439,18 @@ var ZodTuple = class extends ZodType {
       });
       status.dirty();
     }
-    const items = [...ctx.data].map((item, itemIndex) => {
+    const items3 = [...ctx.data].map((item, itemIndex) => {
       const schema = this._def.items[itemIndex] || this._def.rest;
       if (!schema)
         return null;
       return schema._parse(new ParseInputLazyPath(ctx, item, ctx.path, itemIndex));
     }).filter((x) => !!x);
     if (ctx.common.async) {
-      return Promise.all(items).then((results) => {
+      return Promise.all(items3).then((results) => {
         return ParseStatus.mergeArray(status, results);
       });
     } else {
-      return ParseStatus.mergeArray(status, items);
+      return ParseStatus.mergeArray(status, items3);
     }
   }
   get items() {
@@ -7761,10 +7761,10 @@ var ZodFunction = class extends ZodType {
   returnType() {
     return this._def.returns;
   }
-  args(...items) {
+  args(...items3) {
     return new ZodFunction({
       ...this._def,
-      args: ZodTuple.create(items).rest(ZodUnknown.create())
+      args: ZodTuple.create(items3).rest(ZodUnknown.create())
     });
   }
   returns(returnType) {
@@ -9554,10 +9554,10 @@ init_strip_cf_connecting_ip_header();
 init_modules_watch_stub();
 var _a22;
 var Subquery = class {
-  constructor(sql2, fields, alias, isWith = false, usedTables = []) {
+  constructor(sql3, fields, alias, isWith = false, usedTables = []) {
     this._ = {
       brand: "Subquery",
-      sql: sql2,
+      sql: sql3,
       selectedFields: fields,
       alias,
       isWith,
@@ -9930,22 +9930,22 @@ function sql(strings, ...params) {
   return new SQL(queryChunks);
 }
 __name(sql, "sql");
-((sql2) => {
+((sql22) => {
   function empty() {
     return new SQL([]);
   }
   __name(empty, "empty");
-  sql2.empty = empty;
+  sql22.empty = empty;
   function fromList(list) {
     return new SQL(list);
   }
   __name(fromList, "fromList");
-  sql2.fromList = fromList;
+  sql22.fromList = fromList;
   function raw2(str) {
     return new SQL([new StringChunk(str)]);
   }
   __name(raw2, "raw");
-  sql2.raw = raw2;
+  sql22.raw = raw2;
   function join(chunks, separator) {
     const result = [];
     for (const [i, chunk] of chunks.entries()) {
@@ -9957,27 +9957,27 @@ __name(sql, "sql");
     return new SQL(result);
   }
   __name(join, "join");
-  sql2.join = join;
+  sql22.join = join;
   function identifier(value) {
     return new Name(value);
   }
   __name(identifier, "identifier");
-  sql2.identifier = identifier;
+  sql22.identifier = identifier;
   function placeholder2(name2) {
     return new Placeholder(name2);
   }
   __name(placeholder2, "placeholder2");
-  sql2.placeholder = placeholder2;
+  sql22.placeholder = placeholder2;
   function param2(value, encoder2) {
     return new Param(value, encoder2);
   }
   __name(param2, "param2");
-  sql2.param = param2;
+  sql22.param = param2;
 })(sql || (sql = {}));
 ((SQL2) => {
   class Aliased {
-    constructor(sql2, fieldAlias) {
-      this.sql = sql2;
+    constructor(sql22, fieldAlias) {
+      this.sql = sql22;
       this.fieldAlias = fieldAlias;
     }
     static [entityKind] = "SQL.Aliased";
@@ -10554,6 +10554,18 @@ function extractTablesRelationalConfig(schema, configHelpers) {
   return { tables: tablesConfig, tableNamesMap };
 }
 __name(extractTablesRelationalConfig, "extractTablesRelationalConfig");
+function relations(table, relations2) {
+  return new Relations(
+    table,
+    (helpers) => Object.fromEntries(
+      Object.entries(relations2(helpers)).map(([key, value]) => [
+        key,
+        value.withFieldName(key)
+      ])
+    )
+  );
+}
+__name(relations, "relations");
 function createOne(sourceTable) {
   return /* @__PURE__ */ __name(function one(table, config) {
     return new One(
@@ -12307,8 +12319,8 @@ var SQLiteDialect = class {
     const onConflictSql = onConflict?.length ? sql.join(onConflict) : void 0;
     return sql`${withSql}insert into ${table} ${insertOrder} ${valuesSql}${onConflictSql}${returningSql}`;
   }
-  sqlToQuery(sql2, invokeSource) {
-    return sql2.toQuery({
+  sqlToQuery(sql22, invokeSource) {
+    return sql22.toQuery({
       casing: this.casing,
       escapeName: this.escapeName,
       escapeParam: this.escapeParam,
@@ -14306,8 +14318,8 @@ var NoopCache = class extends Cache {
 __name(NoopCache, "NoopCache");
 _a105 = entityKind;
 __publicField(NoopCache, _a105, "NoopCache");
-async function hashQuery(sql2, params) {
-  const dataToHash = `${sql2}-${JSON.stringify(params)}`;
+async function hashQuery(sql3, params) {
+  const dataToHash = `${sql3}-${JSON.stringify(params)}`;
   const encoder2 = new TextEncoder();
   const data = encoder2.encode(dataToHash);
   const hashBuffer = await crypto.subtle.digest("SHA-256", data);
@@ -14501,8 +14513,8 @@ var SQLiteSession = class {
   values(query) {
     return this.prepareOneTimeQuery(this.dialect.sqlToQuery(query), void 0, "run", false).values();
   }
-  async count(sql2) {
-    const result = await this.values(sql2);
+  async count(sql3) {
+    const result = await this.values(sql3);
     return result[0][0];
   }
   /** @internal */
@@ -14767,10 +14779,16 @@ __name(drizzle, "drizzle");
 var schema_exports = {};
 __export(schema_exports, {
   exercises: () => exercises,
+  items: () => items,
+  itemsRelations: () => itemsRelations,
   missions: () => missions,
   recoveryTokens: () => recoveryTokens,
+  userItems: () => userItems,
+  userItemsRelations: () => userItemsRelations,
   userMissions: () => userMissions,
-  users: () => users
+  users: () => users,
+  usersRelations: () => usersRelations,
+  weightLogs: () => weightLogs
 });
 init_checked_fetch();
 init_strip_cf_connecting_ip_header();
@@ -14782,20 +14800,74 @@ var users = sqliteTable("users", {
   googleId: text("google_id").unique(),
   level: integer("level").default(1).notNull(),
   xp: integer("xp").default(0).notNull(),
+  difficulty: text("difficulty", { enum: ["beginner", "intermediate", "advanced"] }).default("beginner").notNull(),
+  fitnessExperience: text("fitness_experience").default("none").notNull(),
+  // e.g., "None", "Some gym", "Athlete"
+  // RPG Stats
+  strength: integer("strength").default(10).notNull(),
+  dexterity: integer("dexterity").default(10).notNull(),
+  vitality: integer("vitality").default(10).notNull(),
+  stamina: integer("stamina").default(10).notNull(),
+  intelligence: integer("intelligence").default(10).notNull(),
+  // Physical Profile
+  height: integer("height"),
+  // in cm
+  weight: integer("weight"),
+  // in kg * 10 (e.g., 75.5kg = 755)
   equipment: text("equipment", { mode: "json" }).default("[]").notNull(),
   isPremium: integer("is_premium", { mode: "boolean" }).default(false).notNull(),
   createdAt: integer("created_at", { mode: "timestamp" }).default(sql`CURRENT_TIMESTAMP`),
   updatedAt: integer("updated_at", { mode: "timestamp" }).default(sql`CURRENT_TIMESTAMP`)
 });
+var usersRelations = relations(users, ({ many }) => ({
+  userItems: many(userItems)
+}));
+var items = sqliteTable("items", {
+  id: text("id").primaryKey(),
+  name: text("name").notNull(),
+  description: text("description"),
+  category: text("category", { enum: ["weapon", "armor", "accessory", "consumable"] }).notNull(),
+  rarity: text("rarity", { enum: ["common", "rare", "epic", "legendary"] }).default("common").notNull(),
+  // Scaling Logic
+  baseMultiplier: integer("base_multiplier").default(1).notNull(),
+  scalingStat: text("scaling_stat", { enum: ["strength", "dexterity", "vitality", "stamina", "level"] }).default("level").notNull(),
+  statWeight: integer("stat_weight").default(1).notNull()
+  // % scaling per stat point
+});
+var itemsRelations = relations(items, ({ many }) => ({
+  userItems: many(userItems)
+}));
+var userItems = sqliteTable("user_items", {
+  userId: text("user_id").notNull().references(() => users.id),
+  itemId: text("item_id").notNull().references(() => items.id),
+  isEquipped: integer("is_equipped", { mode: "boolean" }).default(false).notNull(),
+  acquiredAt: integer("acquired_at", { mode: "timestamp" }).default(sql`CURRENT_TIMESTAMP`).notNull()
+}, (table) => ({
+  pk: primaryKey({ columns: [table.userId, table.itemId] })
+}));
+var userItemsRelations = relations(userItems, ({ one }) => ({
+  user: one(users, {
+    fields: [userItems.userId],
+    references: [users.id]
+  }),
+  item: one(items, {
+    fields: [userItems.itemId],
+    references: [items.id]
+  })
+}));
 var missions = sqliteTable("missions", {
   id: text("id").primaryKey(),
   title: text("title").notNull(),
   description: text("description"),
   type: text("type", { enum: ["daily", "weekly", "monthly"] }).notNull(),
   category: text("category", { enum: ["free", "premium"] }).notNull(),
+  difficulty: text("difficulty", { enum: ["beginner", "intermediate", "advanced"] }).default("beginner").notNull(),
+  intensity: text("intensity", { enum: ["low", "medium", "high"] }).default("low").notNull(),
+  focus: text("focus", { enum: ["strength", "dexterity", "vitality", "stamina", "balanced"] }).default("balanced").notNull(),
   xpReward: integer("xp_reward").notNull(),
+  itemRewardId: text("item_reward_id").references(() => items.id),
   exercises: text("exercises", { mode: "json" }).notNull(),
-  // List of exercise IDs or detailed exercise data
+  // [{ id: string, reps: number, sets: number }]
   isCustom: integer("is_custom", { mode: "boolean" }).default(false).notNull(),
   creatorId: text("creator_id").references(() => users.id),
   durationMinutes: integer("duration_minutes"),
@@ -14805,6 +14877,7 @@ var userMissions = sqliteTable("user_missions", {
   userId: text("user_id").notNull().references(() => users.id),
   missionId: text("mission_id").notNull().references(() => missions.id),
   status: text("status", { enum: ["pending", "completed"] }).default("pending").notNull(),
+  assignedAt: integer("assigned_at", { mode: "timestamp" }).default(sql`CURRENT_TIMESTAMP`).notNull(),
   completedAt: integer("completed_at", { mode: "timestamp" })
 }, (table) => ({
   pk: primaryKey({ columns: [table.userId, table.missionId] })
@@ -14813,8 +14886,15 @@ var exercises = sqliteTable("exercises", {
   id: text("id").primaryKey(),
   name: text("name").notNull(),
   description: text("description"),
-  category: text("category").notNull()
-  // e.g., "Strength", "Cardio"
+  category: text("category").notNull(),
+  // { strength: 0.8, stamina: 0.2 }
+  statWeights: text("stat_weights", { mode: "json" }).default("{}").notNull()
+});
+var weightLogs = sqliteTable("weight_logs", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  userId: text("user_id").notNull().references(() => users.id),
+  weight: integer("weight").notNull(),
+  loggedAt: integer("logged_at", { mode: "timestamp" }).default(sql`CURRENT_TIMESTAMP`).notNull()
 });
 var recoveryTokens = sqliteTable("recovery_tokens", {
   id: integer("id").primaryKey({ autoIncrement: true }),
@@ -16288,7 +16368,8 @@ authRouter.post("/authenticate", zValidator("json", authenticateSchema), async (
       level: 1,
       xp: 0,
       equipment: [],
-      isPremium: false
+      isPremium: false,
+      createdAt: /* @__PURE__ */ new Date()
     });
     user = await db.query.users.findFirst({
       where: eq(users.id, userId)
@@ -16325,7 +16406,8 @@ authRouter.post("/google-login", zValidator("json", googleLoginSchema), async (c
       level: 1,
       xp: 0,
       equipment: [],
-      isPremium: false
+      isPremium: false,
+      createdAt: /* @__PURE__ */ new Date()
     });
     user = await db.query.users.findFirst({
       where: eq(users.id, userId)
@@ -16458,14 +16540,83 @@ var authMiddleware = /* @__PURE__ */ __name(async (c, next) => {
   }
 }, "authMiddleware");
 
+// src/utils/rpg.ts
+init_checked_fetch();
+init_strip_cf_connecting_ip_header();
+init_modules_watch_stub();
+function getRequiredXP(level) {
+  if (level >= 100)
+    return 0;
+  return Math.round(100 * Math.pow(level, 1.5));
+}
+__name(getRequiredXP, "getRequiredXP");
+function processXPGain(currentLevel, currentXP, gain) {
+  let level = currentLevel;
+  let xp = currentXP + gain;
+  while (level < 100) {
+    const required = getRequiredXP(level);
+    if (xp >= required) {
+      xp -= required;
+      level++;
+    } else {
+      break;
+    }
+  }
+  return {
+    level: Math.min(level, 100),
+    xp: level === 100 ? 0 : xp,
+    leveledUp: level > currentLevel
+  };
+}
+__name(processXPGain, "processXPGain");
+function calculateEffectiveBonus(user, item) {
+  const userStatValue = item.scalingStat === "level" ? user.level : user[item.scalingStat];
+  const statFactor = userStatValue * item.statWeight * 0.01;
+  const levelFactor = user.level * 0.05;
+  const multiplier = 1 + statFactor + levelFactor;
+  return Math.round(item.baseMultiplier * multiplier);
+}
+__name(calculateEffectiveBonus, "calculateEffectiveBonus");
+function calculateStatGains(missionExercises, exerciseCatalog) {
+  const gains = {
+    strength: 0,
+    dexterity: 0,
+    vitality: 0,
+    stamina: 0
+  };
+  for (const missionEx of missionExercises) {
+    const exerciseData = exerciseCatalog.find((e) => e.id === missionEx.id);
+    if (exerciseData) {
+      const weights = exerciseData.statWeights || {};
+      const totalVolume = (missionEx.reps || 0) * (missionEx.sets || 0);
+      gains.strength += (weights.strength || 0) * totalVolume * 0.01;
+      gains.dexterity += (weights.dexterity || 0) * totalVolume * 0.01;
+      gains.vitality += (weights.vitality || 0) * totalVolume * 0.01;
+      gains.stamina += (weights.stamina || 0) * totalVolume * 0.01;
+    }
+  }
+  return {
+    strength: Math.round(gains.strength),
+    dexterity: Math.round(gains.dexterity),
+    vitality: Math.round(gains.vitality),
+    stamina: Math.round(gains.stamina)
+  };
+}
+__name(calculateStatGains, "calculateStatGains");
+
 // src/routes/user.ts
 var userRouter = new Hono2();
 userRouter.use("*", authMiddleware);
 var updateUserSchema = external_exports.object({
-  level: external_exports.number().optional(),
-  xp: external_exports.number().optional(),
   equipment: external_exports.array(external_exports.string()).optional(),
-  isPremium: external_exports.boolean().optional()
+  isPremium: external_exports.boolean().optional(),
+  height: external_exports.number().optional(),
+  weight: external_exports.number().optional(),
+  difficulty: external_exports.enum(["beginner", "intermediate", "advanced"]).optional(),
+  fitnessExperience: external_exports.string().optional()
+});
+var logWeightSchema = external_exports.object({
+  weight: external_exports.number()
 });
 userRouter.get("/me", async (c) => {
   const userId = c.get("userId");
@@ -16476,10 +16627,38 @@ userRouter.get("/me", async (c) => {
   if (!user) {
     return c.json({ success: false, message: "User not found" }, 404);
   }
+  const equippedUserItems = await db.query.userItems.findMany({
+    where: and(eq(userItems.userId, userId), eq(userItems.isEquipped, true)),
+    with: {
+      item: true
+    }
+  });
+  const bonuses = equippedUserItems.map((ei) => ({
+    name: ei.item.name,
+    bonus: calculateEffectiveBonus(user, {
+      baseMultiplier: ei.item.baseMultiplier,
+      scalingStat: ei.item.scalingStat,
+      statWeight: ei.item.statWeight
+    }),
+    stat: ei.item.scalingStat
+  }));
   const { passwordHash, ...userData } = user;
+  const { strength, dexterity, vitality, stamina, intelligence, ...rest } = userData;
+  const xpNextLevel = getRequiredXP(user.level);
   return c.json({
     success: true,
-    data: userData
+    data: {
+      ...rest,
+      attributes: {
+        strength,
+        dexterity,
+        vitality,
+        stamina,
+        intelligence
+      },
+      xpNextLevel,
+      activeBonuses: bonuses
+    }
   });
 });
 userRouter.patch("/me", zValidator("json", updateUserSchema), async (c) => {
@@ -16487,16 +16666,75 @@ userRouter.patch("/me", zValidator("json", updateUserSchema), async (c) => {
   const updateData = c.req.valid("json");
   const db = getDB(c.env.DB);
   await db.update(users).set({ ...updateData, updatedAt: /* @__PURE__ */ new Date() }).where(eq(users.id, userId));
+  if (updateData.weight) {
+    await db.insert(weightLogs).values({
+      userId,
+      weight: updateData.weight,
+      loggedAt: /* @__PURE__ */ new Date()
+    });
+  }
   const updatedUser = await db.query.users.findFirst({
     where: eq(users.id, userId)
   });
   if (!updatedUser) {
     return c.json({ success: false, message: "User not found" }, 404);
   }
+  const equippedUserItems = await db.query.userItems.findMany({
+    where: and(eq(userItems.userId, userId), eq(userItems.isEquipped, true)),
+    with: {
+      item: true
+    }
+  });
+  const bonuses = equippedUserItems.map((ei) => ({
+    name: ei.item.name,
+    bonus: calculateEffectiveBonus(updatedUser, {
+      baseMultiplier: ei.item.baseMultiplier,
+      scalingStat: ei.item.scalingStat,
+      statWeight: ei.item.statWeight
+    }),
+    stat: ei.item.scalingStat
+  }));
   const { passwordHash, ...userData } = updatedUser;
+  const { strength, dexterity, vitality, stamina, intelligence, ...rest } = userData;
+  const xpNextLevel = getRequiredXP(updatedUser.level);
   return c.json({
     success: true,
-    data: userData
+    data: {
+      ...rest,
+      attributes: {
+        strength,
+        dexterity,
+        vitality,
+        stamina,
+        intelligence
+      },
+      xpNextLevel,
+      activeBonuses: bonuses
+    }
+  });
+});
+userRouter.get("/weight-history", async (c) => {
+  const userId = c.get("userId");
+  const db = getDB(c.env.DB);
+  const history = await db.select().from(weightLogs).where(eq(weightLogs.userId, userId)).orderBy(desc(weightLogs.loggedAt));
+  return c.json({
+    success: true,
+    data: history
+  });
+});
+userRouter.post("/weight-log", zValidator("json", logWeightSchema), async (c) => {
+  const userId = c.get("userId");
+  const { weight } = c.req.valid("json");
+  const db = getDB(c.env.DB);
+  await db.insert(weightLogs).values({
+    userId,
+    weight,
+    loggedAt: /* @__PURE__ */ new Date()
+  });
+  await db.update(users).set({ weight, updatedAt: /* @__PURE__ */ new Date() }).where(eq(users.id, userId));
+  return c.json({
+    success: true,
+    message: "Weight logged successfully"
   });
 });
 
@@ -16510,14 +16748,19 @@ var createCustomMissionSchema = external_exports.object({
   title: external_exports.string().min(3),
   description: external_exports.string().optional(),
   type: external_exports.enum(["daily", "weekly", "monthly"]),
-  exercises: external_exports.array(external_exports.any()),
-  // Can be IDs or detailed objects
+  exercises: external_exports.array(external_exports.object({
+    id: external_exports.string(),
+    reps: external_exports.number(),
+    sets: external_exports.number()
+  })),
   durationMinutes: external_exports.number().min(1),
-  xpReward: external_exports.number().min(0)
+  itemRewardId: external_exports.string().optional()
 });
 missionRouter.get("/", async (c) => {
   const userId = c.get("userId");
   const type = c.req.query("type");
+  const difficulty = c.req.query("difficulty");
+  const intensity = c.req.query("intensity");
   const db = getDB(c.env.DB);
   const user = await db.query.users.findFirst({
     where: eq(users.id, userId)
@@ -16525,31 +16768,135 @@ missionRouter.get("/", async (c) => {
   if (!user) {
     return c.json({ success: false, message: "User not found" }, 404);
   }
+  const validTypes = ["daily", "weekly", "monthly"];
+  const validDifficulties = ["beginner", "intermediate", "advanced"];
+  const validIntensities = ["low", "medium", "high"];
   const conditions = [];
-  if (type) {
+  if (type && validTypes.includes(type)) {
     conditions.push(eq(missions.type, type));
   }
-  if (!user.isPremium) {
-    conditions.push(eq(missions.category, "free"));
-  }
-  let allMissions;
-  if (conditions.length > 0) {
-    allMissions = await db.select().from(missions).where(and(...conditions));
+  if (difficulty && validDifficulties.includes(difficulty)) {
+    conditions.push(eq(missions.difficulty, difficulty));
   } else {
-    allMissions = await db.select().from(missions);
+    conditions.push(eq(missions.difficulty, user.difficulty));
   }
-  const progress = await db.select().from(userMissions).where(eq(userMissions.userId, userId));
-  const result = allMissions.map((mission) => {
-    const userProgress = progress.find((p) => p.missionId === mission.id);
+  if (intensity && validIntensities.includes(intensity)) {
+    conditions.push(eq(missions.intensity, intensity));
+  } else {
+    const defaultIntensity = user.difficulty === "advanced" ? "high" : user.difficulty === "intermediate" ? "medium" : "low";
+    conditions.push(eq(missions.intensity, defaultIntensity));
+  }
+  if (!user.isPremium)
+    conditions.push(eq(missions.category, "free"));
+  let allMissions = await db.select().from(missions).where(and(...conditions));
+  const allProgress = await db.select().from(userMissions).where(eq(userMissions.userId, userId));
+  const now = /* @__PURE__ */ new Date();
+  const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const getWeekStart = /* @__PURE__ */ __name((d) => {
+    const date = new Date(d);
+    const day2 = date.getDay();
+    const diff = date.getDate() - day2 + (day2 === 0 ? -6 : 1);
+    return new Date(date.setDate(diff)).setHours(0, 0, 0, 0);
+  }, "getWeekStart");
+  const getMonthStart = /* @__PURE__ */ __name((d) => {
+    return new Date(d.getFullYear(), d.getMonth(), 1).getTime();
+  }, "getMonthStart");
+  const isAssignmentExpired = /* @__PURE__ */ __name((assignedAt, missionType) => {
+    const assignedTime = assignedAt.getTime();
+    if (missionType === "daily") {
+      return assignedTime < todayStart.getTime();
+    } else if (missionType === "weekly") {
+      return assignedTime < getWeekStart(now);
+    } else if (missionType === "monthly") {
+      return assignedTime < getMonthStart(now);
+    }
+    return false;
+  }, "isAssignmentExpired");
+  const typesToProcess = type ? [type] : ["daily", "weekly", "monthly"];
+  const finalMissions = [];
+  for (const currentType of typesToProcess) {
+    const currentTypeProgress = allProgress.filter((p) => {
+      const m = allMissions.find((am) => am.id === p.missionId && am.type === currentType);
+      return m && !isAssignmentExpired(new Date(p.assignedAt), currentType);
+    });
+    let selectedForThisType = [];
+    if (currentTypeProgress.length > 0) {
+      selectedForThisType = currentTypeProgress.map((p) => {
+        const m = allMissions.find((am) => am.id === p.missionId);
+        return { ...m, status: p.status, completedAt: p.completedAt };
+      });
+    }
+    if (selectedForThisType.length < 3) {
+      const availablePool = allMissions.filter(
+        (m) => m.type === currentType && !selectedForThisType.some((s) => s.id === m.id)
+      );
+      const shuffledPool = availablePool.sort(() => Math.random() - 0.5);
+      const needed = 3 - selectedForThisType.length;
+      const newSelections = shuffledPool.slice(0, needed);
+      for (const m of newSelections) {
+        await db.insert(userMissions).values({
+          userId,
+          missionId: m.id,
+          status: "pending",
+          assignedAt: now
+        }).onConflictDoUpdate({
+          target: [userMissions.userId, userMissions.missionId],
+          set: {
+            status: "pending",
+            assignedAt: now,
+            completedAt: null
+          }
+        });
+        selectedForThisType.push({ ...m, status: "pending", completedAt: null });
+      }
+    }
+    finalMissions.push(...selectedForThisType);
+  }
+  if (finalMissions.length === 0) {
+    const activeFilters = [];
+    if (type)
+      activeFilters.push(`tipo: ${type}`);
+    const diffLabel = difficulty && validDifficulties.includes(difficulty) ? difficulty : `usuario (${user.difficulty})`;
+    activeFilters.push(`dificultad: ${diffLabel}`);
+    const intensityLabel = intensity && validIntensities.includes(intensity) ? intensity : "autom\xE1tica";
+    activeFilters.push(`intensidad: ${intensityLabel}`);
+    return c.json({
+      success: true,
+      data: [],
+      message: `No se encontraron misiones para la combinaci\xF3n de filtros: ${activeFilters.join(", ")}`
+    });
+  }
+  const userStats = [
+    { name: "strength", value: user.strength },
+    { name: "dexterity", value: user.dexterity },
+    { name: "vitality", value: user.vitality },
+    { name: "stamina", value: user.stamina }
+  ];
+  const sortedStats = [...userStats].sort((a, b) => a.value - b.value);
+  const primaryNeed = sortedStats[0].name;
+  const sortedMissions = finalMissions.sort((a, b) => {
+    if (a.focus === primaryNeed)
+      return -1;
+    if (b.focus === primaryNeed)
+      return 1;
+    return Math.random() - 0.5;
+  });
+  const result = sortedMissions.map((mission) => {
     return {
       ...mission,
-      status: userProgress ? userProgress.status : "pending",
-      completedAt: userProgress ? userProgress.completedAt : null
+      status: mission.status,
+      completedAt: mission.completedAt,
+      isRecommended: mission.focus === primaryNeed
     };
   });
+  const groupedData = {
+    daily: result.filter((m) => m.type === "daily"),
+    weekly: result.filter((m) => m.type === "weekly"),
+    monthly: result.filter((m) => m.type === "monthly")
+  };
   return c.json({
     success: true,
-    data: result
+    data: groupedData
   });
 });
 missionRouter.patch("/:id/complete", async (c) => {
@@ -16568,24 +16915,40 @@ missionRouter.patch("/:id/complete", async (c) => {
   if (existingProgress && existingProgress.status === "completed") {
     return c.json({ success: false, message: "Mission already completed" }, 400);
   }
-  await db.insert(userMissions).values({
-    userId,
-    missionId,
-    status: "completed",
-    completedAt: /* @__PURE__ */ new Date()
-  }).onConflictDoUpdate({
+  await db.insert(userMissions).values({ userId, missionId, status: "completed", completedAt: /* @__PURE__ */ new Date() }).onConflictDoUpdate({
     target: [userMissions.userId, userMissions.missionId],
     set: { status: "completed", completedAt: /* @__PURE__ */ new Date() }
   });
   const user = await db.query.users.findFirst({ where: eq(users.id, userId) });
+  const allExercises = await db.select().from(exercises);
   if (user) {
-    const newXp = user.xp + mission.xpReward;
-    const newLevel = Math.floor(newXp / 1e3) + 1;
-    await db.update(users).set({ xp: newXp, level: newLevel, updatedAt: /* @__PURE__ */ new Date() }).where(eq(users.id, userId));
+    const missionExs = mission.exercises || [];
+    const gains = calculateStatGains(missionExs, allExercises);
+    const { level: newLevel, xp: newXP } = processXPGain(user.level, user.xp, mission.xpReward);
+    await db.update(users).set({
+      xp: newXP,
+      level: newLevel,
+      strength: user.strength + gains.strength,
+      dexterity: user.dexterity + gains.dexterity,
+      vitality: user.vitality + gains.vitality,
+      stamina: user.stamina + gains.stamina,
+      updatedAt: /* @__PURE__ */ new Date()
+    }).where(eq(users.id, userId));
+    if (mission.itemRewardId) {
+      await db.insert(userItems).values({
+        userId,
+        itemId: mission.itemRewardId,
+        isEquipped: false
+      }).onConflictDoNothing();
+    }
+    if (mission.isCustom) {
+      await db.delete(missions).where(eq(missions.id, missionId));
+      await db.delete(userMissions).where(and(eq(userMissions.userId, userId), eq(userMissions.missionId, missionId)));
+    }
   }
   return c.json({
     success: true,
-    message: "Mission completed and reward granted",
+    message: "Mission completed!",
     data: { xpReward: mission.xpReward }
   });
 });
@@ -16599,6 +16962,14 @@ missionRouter.post("/custom", zValidator("json", createCustomMissionSchema), asy
   if (!user || !user.isPremium) {
     return c.json({ success: false, message: "Premium subscription required" }, 403);
   }
+  const activeCustom = await db.query.missions.findFirst({
+    where: and(eq(missions.creatorId, userId), eq(missions.isCustom, true))
+  });
+  if (activeCustom) {
+    return c.json({ success: false, message: "You already have an active custom mission." }, 400);
+  }
+  const baseXP = data.exercises.length * 50;
+  const xpReward = Math.round(baseXP * 0.5);
   const missionId = crypto.randomUUID();
   const newMission = {
     id: missionId,
@@ -16606,11 +16977,13 @@ missionRouter.post("/custom", zValidator("json", createCustomMissionSchema), asy
     description: data.description,
     type: data.type,
     category: "premium",
-    xpReward: data.xpReward,
+    xpReward,
+    itemRewardId: data.itemRewardId || null,
     exercises: data.exercises,
     isCustom: true,
     creatorId: userId,
-    durationMinutes: data.durationMinutes
+    durationMinutes: data.durationMinutes,
+    focus: "balanced"
   };
   await db.insert(missions).values(newMission);
   return c.json({
@@ -16705,7 +17078,7 @@ var jsonError = /* @__PURE__ */ __name(async (request, env, _ctx, middlewareCtx)
 }, "jsonError");
 var middleware_miniflare3_json_error_default = jsonError;
 
-// .wrangler/tmp/bundle-4GUNvJ/middleware-insertion-facade.js
+// .wrangler/tmp/bundle-K5oDVx/middleware-insertion-facade.js
 var __INTERNAL_WRANGLER_MIDDLEWARE__ = [
   middleware_ensure_req_body_drained_default,
   middleware_miniflare3_json_error_default
@@ -16740,7 +17113,7 @@ function __facade_invoke__(request, env, ctx, dispatch, finalMiddleware) {
 }
 __name(__facade_invoke__, "__facade_invoke__");
 
-// .wrangler/tmp/bundle-4GUNvJ/middleware-loader.entry.ts
+// .wrangler/tmp/bundle-K5oDVx/middleware-loader.entry.ts
 var __Facade_ScheduledController__ = class {
   constructor(scheduledTime, cron, noRetry) {
     this.scheduledTime = scheduledTime;

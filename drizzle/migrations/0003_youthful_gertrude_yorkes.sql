@@ -1,0 +1,1 @@
+ALTER TABLE `user_missions` ADD `assigned_at` integer DEFAULT 1772569200 NOT NULL;

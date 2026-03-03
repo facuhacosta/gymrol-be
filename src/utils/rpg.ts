@@ -13,6 +13,40 @@ export interface ItemScaling {
 }
 
 /**
+ * Calculates the experience required to reach the next level.
+ * Formula: 100 * (level ^ 1.5)
+ */
+export function getRequiredXP(level: number): number {
+  if (level >= 100) return 0;
+  return Math.round(100 * Math.pow(level, 1.5));
+}
+
+/**
+ * Processes XP gain and levels up the user if necessary.
+ * Returns the new level and remaining XP.
+ */
+export function processXPGain(currentLevel: number, currentXP: number, gain: number) {
+  let level = currentLevel;
+  let xp = currentXP + gain;
+
+  while (level < 100) {
+    const required = getRequiredXP(level);
+    if (xp >= required) {
+      xp -= required;
+      level++;
+    } else {
+      break;
+    }
+  }
+
+  return {
+    level: Math.min(level, 100),
+    xp: level === 100 ? 0 : xp,
+    leveledUp: level > currentLevel
+  };
+}
+
+/**
  * Calculates the effective bonus of an item based on user stats and level.
  * Formula: Base * (1 + (UserStat * StatWeight * 0.01) + (UserLevel * 0.05))
  */
