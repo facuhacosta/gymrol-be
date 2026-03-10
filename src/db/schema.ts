@@ -19,6 +19,9 @@ export const users = sqliteTable("users", {
   // Physical Profile
   height: integer("height"), // in cm
   weight: integer("weight"), // in kg * 10 (e.g., 75.5kg = 755)
+  age: integer("age"),
+  gender: text("gender", { enum: ["male", "female"] }),
+  objective: text("objective", { enum: ["weight_loss", "muscle_definition", "cardiovascular_endurance", "muscle_hypertrophy"] }),
   equipment: text("equipment", { mode: "json" }).default("[]").notNull(),
   isPremium: integer("is_premium", { mode: "boolean" }).default(false).notNull(),
   createdAt: integer("created_at", { mode: "timestamp" }).default(sql`CURRENT_TIMESTAMP`),
@@ -98,6 +101,8 @@ export const exercises = sqliteTable("exercises", {
   name: text("name").notNull(),
   description: text("description"),
   category: text("category").notNull(),
+  impact: text("impact", { enum: ["low", "high"] }).default("low").notNull(),
+  tags: text("tags", { mode: "json" }).default("[]").notNull(), // e.g. ["aquatic", "balance_required", "crawling"]
   // { strength: 0.8, stamina: 0.2 }
   statWeights: text("stat_weights", { mode: "json" }).default("{}").notNull(),
 });

@@ -1,6 +1,6 @@
 import { Context, Next } from "hono";
-import { verifyToken } from "../utils/auth";
 import { Bindings, Variables } from "../types";
+import { verifyToken } from "../features/auth/auth.service";
 
 export const authMiddleware = async (c: Context<{ Bindings: Bindings; Variables: Variables }>, next: Next) => {
   const authHeader = c.req.header("Authorization");

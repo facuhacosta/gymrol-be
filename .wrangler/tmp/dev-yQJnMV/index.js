@@ -44,7 +44,7 @@ var __publicField = (obj, key, value) => {
   return value;
 };
 
-// .wrangler/tmp/bundle-K5oDVx/checked-fetch.js
+// .wrangler/tmp/bundle-lElz39/checked-fetch.js
 function checkURL(request, init) {
   const url = request instanceof URL ? request : new URL(
     (typeof request === "string" ? new Request(request, init) : request).url
@@ -62,7 +62,7 @@ function checkURL(request, init) {
 }
 var urls;
 var init_checked_fetch = __esm({
-  ".wrangler/tmp/bundle-K5oDVx/checked-fetch.js"() {
+  ".wrangler/tmp/bundle-lElz39/checked-fetch.js"() {
     "use strict";
     urls = /* @__PURE__ */ new Set();
     __name(checkURL, "checkURL");
@@ -76,14 +76,14 @@ var init_checked_fetch = __esm({
   }
 });
 
-// .wrangler/tmp/bundle-K5oDVx/strip-cf-connecting-ip-header.js
+// .wrangler/tmp/bundle-lElz39/strip-cf-connecting-ip-header.js
 function stripCfConnectingIPHeader(input, init) {
   const request = new Request(input, init);
   request.headers.delete("CF-Connecting-IP");
   return request;
 }
 var init_strip_cf_connecting_ip_header = __esm({
-  ".wrangler/tmp/bundle-K5oDVx/strip-cf-connecting-ip-header.js"() {
+  ".wrangler/tmp/bundle-lElz39/strip-cf-connecting-ip-header.js"() {
     "use strict";
     __name(stripCfConnectingIPHeader, "stripCfConnectingIPHeader");
     globalThis.fetch = new Proxy(globalThis.fetch, {
@@ -1945,12 +1945,12 @@ var require_bcrypt = __commonJS({
   }
 });
 
-// .wrangler/tmp/bundle-K5oDVx/middleware-loader.entry.ts
+// .wrangler/tmp/bundle-lElz39/middleware-loader.entry.ts
 init_checked_fetch();
 init_strip_cf_connecting_ip_header();
 init_modules_watch_stub();
 
-// .wrangler/tmp/bundle-K5oDVx/middleware-insertion-facade.js
+// .wrangler/tmp/bundle-lElz39/middleware-insertion-facade.js
 init_checked_fetch();
 init_strip_cf_connecting_ip_header();
 init_modules_watch_stub();
@@ -14814,6 +14814,9 @@ var users = sqliteTable("users", {
   // in cm
   weight: integer("weight"),
   // in kg * 10 (e.g., 75.5kg = 755)
+  age: integer("age"),
+  gender: text("gender", { enum: ["male", "female"] }),
+  objective: text("objective", { enum: ["loss_of_weight", "muscle_definition", "cardiovascular_resistance", "muscle_trofia"] }),
   equipment: text("equipment", { mode: "json" }).default("[]").notNull(),
   isPremium: integer("is_premium", { mode: "boolean" }).default(false).notNull(),
   createdAt: integer("created_at", { mode: "timestamp" }).default(sql`CURRENT_TIMESTAMP`),
@@ -14887,6 +14890,9 @@ var exercises = sqliteTable("exercises", {
   name: text("name").notNull(),
   description: text("description"),
   category: text("category").notNull(),
+  impact: text("impact", { enum: ["low", "high"] }).default("low").notNull(),
+  tags: text("tags", { mode: "json" }).default("[]").notNull(),
+  // e.g. ["aquatic", "balance_required", "crawling"]
   // { strength: 0.8, stamina: 0.2 }
   statWeights: text("stat_weights", { mode: "json" }).default("{}").notNull()
 });
@@ -16368,8 +16374,7 @@ authRouter.post("/authenticate", zValidator("json", authenticateSchema), async (
       level: 1,
       xp: 0,
       equipment: [],
-      isPremium: false,
-      createdAt: /* @__PURE__ */ new Date()
+      isPremium: false
     });
     user = await db.query.users.findFirst({
       where: eq(users.id, userId)
@@ -16604,6 +16609,52 @@ function calculateStatGains(missionExercises, exerciseCatalog) {
 }
 __name(calculateStatGains, "calculateStatGains");
 
+// src/utils/fitness.ts
+init_checked_fetch();
+init_strip_cf_connecting_ip_header();
+init_modules_watch_stub();
+var calculateBMI = /* @__PURE__ */ __name((profile) => {
+  const heightInMeters = profile.height / 100;
+  const weightInKg = profile.weight / 10;
+  return Number((weightInKg / (heightInMeters * heightInMeters)).toFixed(1));
+}, "calculateBMI");
+var getIdealWeight = /* @__PURE__ */ __name((profile) => {
+  const heightInMeters = profile.height / 100;
+  return 22.5 * (heightInMeters * heightInMeters);
+}, "getIdealWeight");
+var classifyFitness = /* @__PURE__ */ __name((profile) => {
+  const weightInKg = profile.weight / 10;
+  const idealWeight = getIdealWeight(profile);
+  const excessWeight = weightInKg - idealWeight;
+  const bmi = calculateBMI(profile);
+  if (bmi < 18.5)
+    return "bajo_peso";
+  if (excessWeight > 30)
+    return "sobrepeso_severo";
+  if (excessWeight > 15)
+    return "sobrepeso_moderado";
+  if (excessWeight > 5)
+    return "sobrepeso_leve";
+  return "peso_ideal";
+}, "classifyFitness");
+var isExerciseCompatible = /* @__PURE__ */ __name((exercise, profile) => {
+  const category = classifyFitness(profile);
+  const tags = exercise.tags || [];
+  if (category === "sobrepeso_severo") {
+    if (exercise.impact === "high")
+      return false;
+    const allowedTags = ["acuatico", "caminata", "ciclismo_horizontal"];
+    const hasAllowedTag = tags.some((tag2) => allowedTags.includes(tag2));
+    if (!hasAllowedTag)
+      return false;
+  }
+  if (profile.age >= 65) {
+    if (tags.includes("riesgo_caida"))
+      return false;
+  }
+  return true;
+}, "isExerciseCompatible");
+
 // src/routes/user.ts
 var userRouter = new Hono2();
 userRouter.use("*", authMiddleware);
@@ -16612,6 +16663,9 @@ var updateUserSchema = external_exports.object({
   isPremium: external_exports.boolean().optional(),
   height: external_exports.number().optional(),
   weight: external_exports.number().optional(),
+  age: external_exports.number().min(13).max(100).optional(),
+  gender: external_exports.enum(["male", "female"]).optional(),
+  objective: external_exports.enum(["loss_of_weight", "muscle_definition", "cardiovascular_resistance", "muscle_trofia"]).optional(),
   difficulty: external_exports.enum(["beginner", "intermediate", "advanced"]).optional(),
   fitnessExperience: external_exports.string().optional()
 });
@@ -16665,6 +16719,29 @@ userRouter.patch("/me", zValidator("json", updateUserSchema), async (c) => {
   const userId = c.get("userId");
   const updateData = c.req.valid("json");
   const db = getDB(c.env.DB);
+  const user = await db.query.users.findFirst({ where: eq(users.id, userId) });
+  if (!user)
+    return c.json({ success: false, message: "User not found" }, 404);
+  const currentHeight = updateData.height ?? user.height;
+  const currentWeight = updateData.weight ?? user.weight;
+  const currentAge = updateData.age ?? user.age;
+  const currentGender = updateData.gender ?? user.gender;
+  const nextObjective = updateData.objective ?? user.objective;
+  if (currentHeight && currentWeight && currentAge && currentGender && nextObjective) {
+    const fitnessProfile = {
+      height: currentHeight,
+      weight: currentWeight,
+      age: currentAge,
+      gender: currentGender
+    };
+    const category = classifyFitness(fitnessProfile);
+    if (category === "sobrepeso_severo" && nextObjective === "hipertrofia_muscular") {
+      return c.json({
+        success: false,
+        message: "Para personas con sobrepeso severo, se recomienda priorizar la p\xE9rdida de peso o resistencia antes de la hipertrofia."
+      }, 400);
+    }
+  }
   await db.update(users).set({ ...updateData, updatedAt: /* @__PURE__ */ new Date() }).where(eq(users.id, userId));
   if (updateData.weight) {
     await db.insert(weightLogs).values({
@@ -16789,6 +16866,29 @@ missionRouter.get("/", async (c) => {
   if (!user.isPremium)
     conditions.push(eq(missions.category, "free"));
   let allMissions = await db.select().from(missions).where(and(...conditions));
+  const allExercisesPool = await db.select().from(exercises);
+  const userProfile = {
+    height: user.height ?? 0,
+    weight: user.weight ?? 0,
+    age: user.age ?? 0,
+    gender: user.gender
+  };
+  if (userProfile.height && userProfile.weight && userProfile.age && userProfile.gender) {
+    allMissions = allMissions.filter((m) => {
+      const missionExs = m.exercises || [];
+      return missionExs.every((me) => {
+        const ex = allExercisesPool.find((e) => e.id === me.id);
+        if (!ex)
+          return true;
+        return isExerciseCompatible({
+          id: ex.id,
+          name: ex.name,
+          impact: ex.impact,
+          tags: ex.tags
+        }, userProfile);
+      });
+    });
+  }
   const allProgress = await db.select().from(userMissions).where(eq(userMissions.userId, userId));
   const now = /* @__PURE__ */ new Date();
   const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
@@ -16874,10 +16974,19 @@ missionRouter.get("/", async (c) => {
   ];
   const sortedStats = [...userStats].sort((a, b) => a.value - b.value);
   const primaryNeed = sortedStats[0].name;
+  const objectiveToFocusMap = {
+    "p\xE9rdida_de_peso": "stamina",
+    "definici\xF3n_muscular": "dexterity",
+    "resistencia_cardiovascular": "vitality",
+    "hipertrofia_muscular": "strength"
+  };
+  const objectiveFocus = user.objective ? objectiveToFocusMap[user.objective] : null;
   const sortedMissions = finalMissions.sort((a, b) => {
-    if (a.focus === primaryNeed)
+    const aIsRecommended = a.focus === primaryNeed || a.focus === objectiveFocus;
+    const bIsRecommended = b.focus === primaryNeed || b.focus === objectiveFocus;
+    if (aIsRecommended && !bIsRecommended)
       return -1;
-    if (b.focus === primaryNeed)
+    if (!aIsRecommended && bIsRecommended)
       return 1;
     return Math.random() - 0.5;
   });
@@ -16886,7 +16995,7 @@ missionRouter.get("/", async (c) => {
       ...mission,
       status: mission.status,
       completedAt: mission.completedAt,
-      isRecommended: mission.focus === primaryNeed
+      isRecommended: mission.focus === primaryNeed || mission.focus === objectiveFocus
     };
   });
   const groupedData = {
@@ -17078,7 +17187,7 @@ var jsonError = /* @__PURE__ */ __name(async (request, env, _ctx, middlewareCtx)
 }, "jsonError");
 var middleware_miniflare3_json_error_default = jsonError;
 
-// .wrangler/tmp/bundle-K5oDVx/middleware-insertion-facade.js
+// .wrangler/tmp/bundle-lElz39/middleware-insertion-facade.js
 var __INTERNAL_WRANGLER_MIDDLEWARE__ = [
   middleware_ensure_req_body_drained_default,
   middleware_miniflare3_json_error_default
@@ -17113,7 +17222,7 @@ function __facade_invoke__(request, env, ctx, dispatch, finalMiddleware) {
 }
 __name(__facade_invoke__, "__facade_invoke__");
 
-// .wrangler/tmp/bundle-K5oDVx/middleware-loader.entry.ts
+// .wrangler/tmp/bundle-lElz39/middleware-loader.entry.ts
 var __Facade_ScheduledController__ = class {
   constructor(scheduledTime, cron, noRetry) {
     this.scheduledTime = scheduledTime;

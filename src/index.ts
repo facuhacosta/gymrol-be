@@ -2,10 +2,10 @@ import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { logger } from "hono/logger";
 import { rateLimit } from "./middleware/rate-limit";
-import { authRouter } from "./routes/auth";
-import { userRouter } from "./routes/user";
-import { missionRouter } from "./routes/mission";
-import { exerciseRouter } from "./routes/exercise";
+import { authRouter } from "./features/auth/auth.controller";
+import { userRouter } from "./features/user/user.controller";
+import { missionRouter } from "./features/mission/mission.controller";
+import { exerciseRouter } from "./features/excercise/exercise.controller";
 import { Bindings, Variables } from "./types";
 
 const app = new Hono<{ Bindings: Bindings; Variables: Variables }>();
