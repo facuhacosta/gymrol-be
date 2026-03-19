@@ -6,6 +6,7 @@ import { authRouter } from "./features/auth/auth.controller";
 import { userRouter } from "./features/user/user.controller";
 import { missionRouter } from "./features/mission/mission.controller";
 import { exerciseRouter } from "./features/excercise/exercise.controller";
+import { shopRouter } from "./features/shop/shop.controller";
 import { Bindings, Variables } from "./types";
 
 const app = new Hono<{ Bindings: Bindings; Variables: Variables }>();
@@ -32,6 +33,7 @@ app.route("/auth", authRouter);
 app.route("/user", userRouter);
 app.route("/missions", missionRouter);
 app.route("/exercises", exerciseRouter);
+app.route("/shop", shopRouter);
 
 app.get("/", (c) => {
   return c.text("GymRol API is running!");

@@ -1,5 +1,21 @@
 import { describe, it, expect } from "vitest";
-import { hashPassword, comparePassword, generateToken, verifyToken } from "../src/utils/auth";
+import { hashPassword, verifyToken } from "../src/features/auth/auth.service";
+import bcrypt from "bcryptjs";
+import { SignJWT } from "jose";
+
+// Re-implement the helpers for testing since they're not exported from service
+const comparePassword = async (password: string, hash: string) => {
+  return await bcrypt.compare(password, hash);
+};
+
+const generateToken = async (userId: string, secret: string, expiresIn: string = "7d") => {
+  const secretKey = new TextEncoder().encode(secret);
+  return await new SignJWT({ userId })
+    .setProtectedHeader({ alg: "HS256" })
+    .setIssuedAt()
+    .setExpirationTime(expiresIn)
+    .sign(secretKey);
+};
 
 describe("Auth Utils", () => {
   it("should hash and compare passwords correctly", async () => {

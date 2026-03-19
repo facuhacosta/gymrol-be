@@ -71,7 +71,7 @@ describe("User Routes - PATCH /user/me", () => {
     }, { DB: {} } as any);
 
     expect(res.status).toBe(400);
-    const data = await res.json();
+    const data = await res.json() as { success: boolean; message: string };
     expect(data.success).toBe(false);
     expect(data.message).toContain("For individuals with severe obesity, it is recommended to prioritize weight loss");
   });

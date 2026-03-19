@@ -121,3 +121,49 @@ export const recoveryTokens = sqliteTable("recovery_tokens", {
   expiresAt: integer("expires_at", { mode: "timestamp" }).notNull(),
   createdAt: integer("created_at", { mode: "timestamp" }).default(sql`CURRENT_TIMESTAMP`),
 });
+
+// ============ SHOP TABLES ============
+
+export const shopItemOffers = sqliteTable("shop_item_offers", {
+  id: text("id").primaryKey(),
+  name: text("name").notNull(),
+  description: text("description"),
+  imageUrl: text("image_url").notNull(),
+  category: text("category", { enum: ["weapon", "armor", "accessory", "consumable"] }).notNull(),
+  rarity: text("rarity", { enum: ["common", "uncommon", "rare", "epic", "legendary"] }).default("common").notNull(),
+  statBonus: text("stat_bonus", { mode: "json" }).notNull(), // { stat: string, value: number }
+  priceCredits: integer("price_credits").notNull(),
+  isFeatured: integer("is_featured", { mode: "boolean" }).default(false).notNull(),
+});
+
+export const coinOffers = sqliteTable("coin_offers", {
+  id: text("id").primaryKey(),
+  coinsAmount: integer("coins_amount").notNull(),
+  bonusCoins: integer("bonus_coins").default(0).notNull(),
+  priceCredits: integer("price_credits").notNull(),
+  isFeatured: integer("is_featured", { mode: "boolean" }).default(false).notNull(),
+});
+
+export const creditOffers = sqliteTable("credit_offers", {
+  id: text("id").primaryKey(),
+  creditsAmount: integer("credits_amount").notNull(),
+  bonusCredits: integer("bonus_credits").default(0).notNull(),
+  priceUSD: integer("price_usd_cents").notNull(), // Stored as cents to avoid floating point issues
+  isFeatured: integer("is_featured", { mode: "boolean" }).default(false).notNull(),
+});
+
+export const userPurchases = sqliteTable("user_purchases", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  userId: text("user_id").notNull().references(() => users.id),
+  offerType: text("offer_type", { enum: ["item", "coins", "credits"] }).notNull(),
+  offerId: text("offer_id").notNull(),
+  transactionId: text("transaction_id").notNull().unique(), // Prevents double-claiming
+  claimedAt: integer("claimed_at", { mode: "timestamp" }).notNull(),
+});
+
+export const userPurchasesRelations = relations(userPurchases, ({ one }) => ({
+  user: one(users, {
+    fields: [userPurchases.userId],
+    references: [users.id],
+  }),
+}));
